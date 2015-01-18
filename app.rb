@@ -37,7 +37,7 @@ class App < Sinatra::Base
   
   def self.setup_mongo
     db_config = settings.config['database']
-    MongoMapper.connection = Mongo::Connection.new(db_config['host'], :pool_size => 9)
+    MongoMapper.connection = Mongo::Connection.new(db_config['host'], :pool_size => 90)
     MongoMapper.database = db_config['name']
     if db_config.has_key? 'username'
       MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
