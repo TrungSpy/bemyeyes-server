@@ -43,7 +43,6 @@ class Helper < User
   def available request=nil, limit=5
     begin
       raise 'no blind person in call' if request.blind.nil?
-      languages_of_blind = request.blind.languages
 
       request_id = request.present? ? request.id : nil
       contacted_helpers = HelperRequest
@@ -53,7 +52,8 @@ class Helper < User
       .collect(&:helper_id)
       TheLogger.log.debug "contacted_helpers #{contacted_helpers}"
 
-       asleep_users = User.asleep_users languages_of_blind
+       languages_of_blind = request.blind.languages
+       asleep_users = User.asleep_users
       .where(:role=> 'helper')
       .fields(:user_id)
       .all

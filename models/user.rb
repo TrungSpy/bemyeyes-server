@@ -31,7 +31,7 @@ class User
 
   key :password_hash, String
   key :password_salt, String
-  key :email, String, :required => true
+  key :email, String, :required => true, :unique => true
   key :first_name, String, :required => true
   key :last_name, String, :required => true
   #The iso 639-1 2 letter code
