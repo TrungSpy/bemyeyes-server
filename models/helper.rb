@@ -1,4 +1,6 @@
 class Helper < User
+  extend ModelAddOns::TimeConcerns
+
   many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
   many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
   many :request, :foreign_key => :request_id, :class_name => "Request"
@@ -43,6 +45,9 @@ class Helper < User
   def available request=nil, limit=5
     begin
       raise 'no blind person in call' if request.blind.nil?
+       languages_of_blind = request.blind.languages
+       now = Time.now.utc
+       now_in_seconds_since_midnight = Helper.time_to_seconds_since_midnight now, 0
 
       request_id = request.present? ? request.id : nil
       contacted_helpers = HelperRequest
@@ -52,18 +57,7 @@ class Helper < User
       .collect(&:helper_id)
       TheLogger.log.debug "contacted_helpers #{contacted_helpers}"
 
-       languages_of_blind = request.blind.languages
-       asleep_users = User.asleep_users
-      .where(:role=> 'helper')
-      .fields(:user_id)
-      .all
-      .collect(&:user_id)
-      TheLogger.log.debug "asleep_users #{asleep_users}"
-
-      TheLogger.log.info "languages_of_blind #{languages_of_blind}"
-      Helper.where(:languages => {:$in => languages_of_blind})
-
-      helpers_in_a_call = Request.running_requests
+       helpers_in_a_call = Request.running_requests
       .fields(:helper_id)
       .all
       .collect(&:helper_id)
@@ -79,7 +73,9 @@ class Helper < User
         {:available_from => nil},
         {:available_from.lt => Time.now.utc}
     ])
-    .where(:user_id.nin => asleep_users)
+    .where(
+      :go_to_sleep_in_seconds_since_midnight.gte => now_in_seconds_since_midnight,
+      :wake_up_in_seconds_since_midnight.lte => now_in_seconds_since_midnight)
     .where('abuse_reports.blind_id' => {"$ne" =>  request.blind_id})
     .where(:expiry_time.gt => Time.now)
     .where(:blocked => false)
