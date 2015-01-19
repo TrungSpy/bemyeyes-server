@@ -16,7 +16,7 @@ gem 'tzinfo'
 gem 'tzinfo-data'
 gem 'language_list'
 gem 'logstash-logger'
-
+gem 'redis'
 gem 'event_bus'
 gem 'sinatra-jsonp'
 gem 'zero_push'

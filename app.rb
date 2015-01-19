@@ -12,6 +12,7 @@ require 'bcrypt'
 require 'json-schema'
 require 'rufus-scheduler'
 require 'logstash-logger'
+require 'redis'
 require_relative 'helpers/requests_helper'
 require_relative 'models/init'
 require_relative 'routes/init'
@@ -69,6 +70,7 @@ class App < Sinatra::Base
 
     setup_mongo
     start_cron_jobs
+    $redis = Redis.new
   end
 
   setup_event_bus
