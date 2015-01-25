@@ -38,15 +38,16 @@ class App < Sinatra::Base
 
   def self.setup_mongo
     db_config = settings.config['database']
-    MongoMapper.setup({'production' => {
-      'database' => db_config['name']
-,
-      'hosts' => db_config['hosts'],
-      :username => (db_config['username'],
-      :password => db_config['password']
-      }}, 'production')
+    MongoMapper.setup({
+      'production' => {
+        'database' => db_config['name'],
+        'hosts' => db_config['hosts'],
+        :username => db_config['username'],
+        :password => db_config['password']
+      }
+    }, 'production')
 
-     end
+  end
 
   def self.start_cron_jobs
     db_config = settings.config['database']
