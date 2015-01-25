@@ -46,7 +46,7 @@ class App < Sinatra::Base
         :password => db_config['password']
       }
     }, 'production')
-
+    MongoMapper.database.authenticate(db_config['username'], db_config['password'])
   end
 
   def self.start_cron_jobs
