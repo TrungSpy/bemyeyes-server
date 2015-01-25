@@ -38,14 +38,15 @@ class App < Sinatra::Base
 
   def self.setup_mongo
     db_config = settings.config['database']
-    MongoMapper.connection = Mongo::MongoReplicaSetClient.new(db_config['hosts'], :rs_name => 'BeMyEyes')
-    MongoMapper.database = db_config['name']
-    if db_config.has_key? 'username'
-    MongoMapper.database.authenticate(db_config['username'], db_config['password'])
-    else
-      MongoMapper.connection[db_config['name']]
-    end
-  end
+    MongoMapper.setup({'production' => {
+      'database' => db_config['name']
+,
+      'hosts' => db_config['hosts'],
+      :username => (db_config['username'],
+      :password => db_config['password']
+      }}, 'production')
+
+     end
 
   def self.start_cron_jobs
     db_config = settings.config['database']
