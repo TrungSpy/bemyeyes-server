@@ -38,10 +38,11 @@ class App < Sinatra::Base
 
   def self.setup_mongo
     db_config = settings.config['database']
-    MongoMapper.connection = Mongo::MongoReplicaSetClient.new(db_config['hosts'], :name => 'BeMyEyes')
+    MongoMapper.connection = Mongo::MongoReplicaSetClient.new(db_config['hosts'], :rs_name => 'BeMyEyes')
     MongoMapper.database = db_config['name']
     if db_config.has_key? 'username'
       MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
+    MongoMapper.database.authenticate(db_config['username'], db_config['password'])
     else
       MongoMapper.connection[db_config['name']]
     end
