@@ -54,7 +54,7 @@ class Helper < User
       .where(:request_id => request_id)
       .fields(:helper_id)
       .all
-      .collect(&:helper_id)
+      .collect(&:helper_id) || []
       TheLogger.log.debug "contacted_helpers #{contacted_helpers}"
 
        helpers_in_a_call = Request.running_requests
