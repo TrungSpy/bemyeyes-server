@@ -15,7 +15,7 @@ gem 'mandrill-api'
 gem 'tzinfo'
 gem 'tzinfo-data'
 gem 'language_list'
-
+gem 'redis'
 gem 'event_bus'
 gem 'sinatra-jsonp'
 gem 'zero_push'

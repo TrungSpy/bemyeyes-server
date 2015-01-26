@@ -1,3 +1,4 @@
+require 'redis'
 require "sinatra/jsonp"
 
 class App < Sinatra::Base
@@ -5,7 +6,13 @@ class App < Sinatra::Base
   helpers Sinatra::Jsonp
   namespace '/stats' do
     get '/community' do
-      return jsonp ({ 'blind' => Blind.count, 'helpers' => Helper.count, 'no_helped' =>Request.count })
+      result = $redis.hgetall("community_stats")
+      if result.empty?
+        result = {"blind" => Blind.count, "helpers" => Helper.count, "no_helped" => Request.count}
+        $redis.mapped_hmset("community_stats", result)
+        $redis.expire("community_stats", 10)
+      end
+      return jsonp ({blind: result["blind"].to_i, helpers: result["helpers"].to_i, no_helped:result["no_helped"].to_i})
     end
 
     get '/profile/:auth_token' do

@@ -1,6 +1,7 @@
 require 'bcrypt'
 require 'tzinfo'
 require 'event_bus'
+require_relative 'time_concerns'
 
 DEFAULT_WAKE_UP_HOUR = 7
 DEFAULT_WAKE_UP_MINUTE = 0
@@ -9,6 +10,7 @@ DEFAULT_GO_TO_SLEEP_HOUR = 22
 
 class User
   include MongoMapper::Document
+  extend ModelAddOns::TimeConcerns
   SCHEMA = {
     "type" => "object",
     "required" => [],
@@ -89,6 +91,11 @@ class User
 
   def self.authenticate_using_email(email, password)
     user = User.first(:email => { :$regex => /#{Regexp.escape(email)}/i })
+
+    if user.nil? || user.is_external_user
+      TheLogger.log.info "User trying to log in with password, but is external user or nil"
+      return nil
+    end
 
     if !user.nil?
       return authenticate_password(user, password)
@@ -173,12 +180,7 @@ class User
     self.go_to_sleep_in_seconds_since_midnight = User.time_to_seconds_since_midnight go_to_sleep_time, utc_offset
   end
 
-  def self.time_to_seconds_since_midnight time, utc_offset
-    #the utc offset should actually be subtracted - look at a map if in doubt
-    hour_in_utc = time.hour - utc_offset
-    hour_in_utc * 3600 + time.min * 60
-  end
-
+ 
   def self.authenticate_password(user, password)
     if user && user.password_hash == BCrypt::Engine.hash_secret(password, user.password_salt)
       return user

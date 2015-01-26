@@ -9,6 +9,10 @@ class App < Sinatra::Base
     # Create new request
     post '/?' do
 
+      if current_user.blocked
+        {status:"blocked"}.to_json
+      end
+
       begin
         session = OpenTokSDK.create_session media_mode: :relayed
         session_id = session.session_id
@@ -40,6 +44,12 @@ class App < Sinatra::Base
 
     # Answer a request
     put '/:short_id/answer' do
+      unless current_user
+        TheLogger.log.error "Trying to answer request, but no user"
+        # right now telling the user that the request is stopped is the best we can do.
+        give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
+      end
+
       request = request_from_short_id(params[:short_id])
 
       if request.answered?
