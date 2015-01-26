@@ -9,6 +9,10 @@ class App < Sinatra::Base
     # Create new request
     post '/?' do
 
+      if current_user.blocked
+        {status:"blocked"}.to_json
+      end
+
       begin
         session = OpenTokSDK.create_session :media_mode => :relayed
         session_id = session.session_id
