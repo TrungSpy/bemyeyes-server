@@ -45,7 +45,7 @@ class Helper < User
   def available request=nil, limit=5
     begin
       raise 'no blind person in call' if request.blind.nil?
-       languages_of_blind = request.blind.languages
+       languages_of_blind = request.blind.languages ||["en"]
        now = Time.now.utc
        now_in_seconds_since_midnight = Helper.time_to_seconds_since_midnight now, 0
 
@@ -60,7 +60,7 @@ class Helper < User
        helpers_in_a_call = Request.running_requests
       .fields(:helper_id)
       .all
-      .collect(&:helper_id)
+      .collect(&:helper_id) || []
       TheLogger.log.debug "helpers_in_a_call #{helpers_in_a_call}"
 
     rescue Exception => e
