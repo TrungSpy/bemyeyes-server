@@ -23,7 +23,7 @@ describe "Helpers" do
   end
 
   it "returns id of waiting requests" do
-    pending("timing issue")
+    skip("timing issue")
     blind_token = create_blind_ready_to_make_request
     _helper_token, helper_id = create_helper_ready_for_call
 
