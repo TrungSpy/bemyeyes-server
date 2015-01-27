@@ -40,10 +40,8 @@ module ZeroPushIphoneNotifier
     fiber.resume
 
     device_tokens.each do |token|
-      TheLogger.log.info("sending request to token device " + token)
+      TheLogger.log.info("sending request to token device #{token} for request #{request.id} handled by #{self.class.to_s}")
     end
-    TheLogger.log.info "Push notification handled by: " + self.class.to_s
-
   end
 
   def send_reset_notifications device_tokens
@@ -63,9 +61,8 @@ module ZeroPushIphoneNotifier
     fiber.resume
 
     device_tokens.each do |token|
-      TheLogger.log.info("sending reset request to token device " + token)
+      TheLogger.log.info("sending reset request to token device #{token}, handled by #{self.class.to_s}")
     end
-    TheLogger.log.info "Push notification handled by: " + self.class.to_s
   end
 
 

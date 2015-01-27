@@ -31,7 +31,7 @@ class App < Sinatra::Base
       request.save!
 
       requests_helper.check_requests 1
-
+      TheLogger.log.info "request started #{request}"
       EventBus.announce(:request_created, request_id: request.id)
       return request.to_json
     end
