@@ -16,15 +16,15 @@ class App < Sinatra::Base
     end
 
     get '/profile/:auth_token' do
-       begin
-      no_helped = Request.count(helper_id: current_helper._id, answered: true)
-      total_points = current_helper.points
-      events = get_point_events current_helper
-      current_level =  user_level_to_BMELevel current_helper.user_level
-      next_level = user_level_to_BMELevel current_helper.user_level.next_user_level
+      begin
+        no_helped = Request.count(helper_id: current_helper._id, answered: true)
+        total_points = current_helper.points
+        events = get_point_events current_helper
+        current_level =  user_level_to_BMELevel current_helper.user_level
+        next_level = user_level_to_BMELevel current_helper.user_level.next_user_level
 
-      return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'current_level'=> current_level, 'next_level' => next_level}.to_json
-       rescue => e
+        return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'current_level'=> current_level, 'next_level' => next_level}.to_json
+      rescue => e
         give_error(400, ERROR_INVALID_BODY, "#{e.message}").to_json
       end
     end
