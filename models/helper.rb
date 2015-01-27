@@ -82,6 +82,7 @@ class Helper < User
     .all.sample(limit)
     rescue Exception => e
       TheLogger.log.error e.message
+      []
     end
   end
 end
