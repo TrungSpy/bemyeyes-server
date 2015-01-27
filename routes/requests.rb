@@ -30,7 +30,7 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
 
-      requests_helper.check_requests 1
+      requests_helper.check_request request, 1
       TheLogger.log.info "request started #{request}"
       EventBus.announce(:request_created, request_id: request.id)
       return request.to_json
