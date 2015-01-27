@@ -1,4 +1,5 @@
 require_relative '../helpers/requests_helper'
+require_relative '../helpers/i_find_helpers_for_request'
 require_relative '../helpers/requests_helper_factory'
 
 class App < Sinatra::Base
@@ -30,7 +31,8 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
 
-      requests_helper.check_request request, 1
+      i_find_helpers_for_requests.start request
+
       TheLogger.log.info "request started #{request}"
       EventBus.announce(:request_created, request_id: request.id)
       return request.to_json
@@ -127,8 +129,9 @@ class App < Sinatra::Base
     end
   end # End namespace /request
 
-  def requests_helper
-    RequestsHelperFactory.create settings
+  def i_find_helpers_for_requests
+    requests_helper ||= RequestsHelperFactory.create settings
+    BME::IFindHelpersForRequest.new requests_helper
   end
 
   # Find a request from a short ID
