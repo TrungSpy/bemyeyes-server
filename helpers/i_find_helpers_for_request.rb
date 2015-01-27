@@ -9,7 +9,7 @@ module BME
     end
 
     def find_helpers_for_request request
-      10.times do
+      40.times do
         TheLogger.log.info "thread finding helpers for request #{request}"
         @requests_helper.check_request request, 1
         TheLogger.log.info "finished finding helpers"
