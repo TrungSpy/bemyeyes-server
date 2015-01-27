@@ -55,12 +55,14 @@ class Helper < User
       .fields(:helper_id)
       .all
       .collect(&:helper_id) || []
+      contacted_helpers.compact!
       TheLogger.log.debug "contacted_helpers #{contacted_helpers}"
 
        helpers_in_a_call = Request.running_requests
       .fields(:helper_id)
       .all
       .collect(&:helper_id) || []
+      helpers_in_a_call.compact!
       TheLogger.log.debug "helpers_in_a_call #{helpers_in_a_call}"
 
         Helper.where(
