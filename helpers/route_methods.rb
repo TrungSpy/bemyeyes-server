@@ -46,7 +46,6 @@ class App < Sinatra::Base
   end
 
   def model_from_id(id, model_class, code, message)
-    TheLogger.log.fatal "in model_from_id"
     model = model_class.first(:_id => id)
     if model.nil?
       give_error(400, code, message).to_json
