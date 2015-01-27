@@ -81,7 +81,7 @@ class Helper < User
     .sort(:last_help_request.asc)
     .all.sample(limit)
     rescue Exception => e
-      TheLogger.log.error e.message
+      TheLogger.log.fatal "Fatal trying to find available helpers #{e.message}"
       []
     end
   end
