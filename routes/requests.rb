@@ -46,7 +46,7 @@ class App < Sinatra::Base
     put '/:short_id/answer' do
       unless current_user
         TheLogger.log.error "Trying to answer request, but no user"
-        # right now telling the user that the request is stopped is the best we can do.
+        # TODO: right now telling the user that the request is stopped is the best we can do.
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       end
 
