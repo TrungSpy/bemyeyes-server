@@ -19,8 +19,8 @@ class App < Sinatra::Base
       request.body.rewind
 
       reset_password_service = ResetPasswordService.new TheLogger
-      token = params[:token]
-      input_password = params[:inputPassword]
+      token = params["token"]
+      input_password = params["inputPassword"]
       success, message = reset_password_service.reset_password token, input_password
 
       if success
