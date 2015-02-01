@@ -4,6 +4,7 @@ BeMyEyes Server
 Whenever the iOs app makes a request it calls this API.  
 
 [![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
+[![Stories in Ready](https://badge.waffle.io/bemyeyes/bemyeyes-server.svg?label=ready&title=Ready)](http://waffle.io/bemyeyes/bemyeyes-server)
 
 ##Getting started  
 You can either use vagrant to run the site - this is the prefered way  
