@@ -50,4 +50,11 @@ At the moment the tests are hardcoded to test against localhost:9001 which is th
 ##Model
 ![alt text](http://yuml.me/f0847fc8 "Model")
 
+## Collaboration
 
+We are using [Waffle](https://waffle.io/bemyeyes/bemyeyes-server) to manage Github issues. It has two-way sync by adding and removing tags like:
+- Ready – Done discussing, do!
+- In progress – Someone is working on this one
+
+You can see priorities on [Waffle](https://waffle.io/bemyeyes/bemyeyes-server) – top = first.
+Admins of this repo can make the changes. 
