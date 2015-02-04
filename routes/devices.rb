@@ -34,9 +34,12 @@ class App < Sinatra::Base
 
   def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
 
-    device = Device.first(device_token: device_token)
-    unless device.nil?
-      device.destroy
+    devices = Device.where(device_token: device_token).all
+
+    devices.each do |device|
+      unless device.nil?
+        device.destroy
+      end
     end
 
     begin
