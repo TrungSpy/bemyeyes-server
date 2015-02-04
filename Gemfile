@@ -43,5 +43,4 @@ end
 gem 'rake'
 
 gem 'newrelic_rpm'
-gem 'redis'
 gem 'logster'
