@@ -33,14 +33,7 @@ class App < Sinatra::Base
   end # End namespace /devices
 
   def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
-
-    devices = Device.where(device_token: device_token).all
-
-    devices.each do |device|
-      unless device.nil?
-        device.destroy
-      end
-    end
+    Device.destroy_all(device_token: device_token)
 
     begin
       device = Device.new
