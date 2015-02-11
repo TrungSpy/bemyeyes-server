@@ -26,7 +26,7 @@ module ZeroPushIphoneNotifier
         :device_tokens => device_tokens,
         :alert => {
           :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
-          :"loc-args" => [ notification_args_name ],
+          :"loc-args" => [ "Be My Eyes"],
           :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           short_id: request.short_id,
         }, 
