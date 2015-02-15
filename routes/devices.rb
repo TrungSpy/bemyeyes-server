@@ -34,7 +34,7 @@ class App < Sinatra::Base
 
   def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
     Device.destroy_all(device_token: device_token)
-    current_user.devices.delete_if {|user| user.device_token = device_token }
+    current_user.devices.delete_if {|device| device.device_token = device_token }
     current_user.save!
 
     begin
