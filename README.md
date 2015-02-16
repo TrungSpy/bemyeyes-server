@@ -51,7 +51,9 @@ At the moment the tests are hardcoded to test against localhost:9001 which is th
 ##Model
 ![alt text](http://yuml.me/f0847fc8 "Model")
 
-## Collaboration
+# Collaboration
+
+[![Throughput Graph](https://graphs.waffle.io/bemyeyes/bemyeyes-ios/throughput.svg)](https://waffle.io/bemyeyes/bemyeyes-server/metrics)
 
 We are using [Waffle](https://waffle.io/bemyeyes/bemyeyes-server) to manage Github issues. It has two-way sync by adding and removing tags like:
 - Ready – Done discussing, do!
