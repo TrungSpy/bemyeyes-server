@@ -69,11 +69,6 @@ class App < Sinatra::Base
 
     # A helper can cancel his own answer. This should only be done if the session has not already started.
     put '/:short_id/answer/cancel' do
-      begin
-        auth_token = body_params["token"]
-      rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
-      end
       request = request_from_short_id(params[:short_id])
 
       if request.helper.nil?
