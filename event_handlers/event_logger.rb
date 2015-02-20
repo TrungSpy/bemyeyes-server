@@ -3,7 +3,7 @@ require_relative '../models/event_log_object'
 class EventLogger
 
   def method_missing(meth, *args, &_block)
-    Thread.new do
+    fiber = Fiber.new do
 
       event_name = meth.to_s
       event_log = EventLog.new
@@ -19,6 +19,8 @@ class EventLogger
       end
       event_log.save!
     end
+
+    fiber.resume
 
   end
 
