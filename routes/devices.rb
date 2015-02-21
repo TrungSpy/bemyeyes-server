@@ -62,7 +62,7 @@ class App < Sinatra::Base
       device.save!
       device
     rescue Exception => e
-      give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device, error:#{e}").to_json
+      give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device, error:#{e}, device_token: #{device_token}").to_json
     end
   end
 end
