@@ -3,11 +3,9 @@ load('/usr/local/src/lodash/lodash.min.js');
 var languages = [];
 var language_count = [];
 
-// find unique languages
-db.users.find({},{_id:0,languages:1}).forEach(function(user) {
-  languages = _.union(languages, user.languages);
-  print(user.languages);
-});
+
+  languages = db.users.distinct( 'languages' );
+
 
 
 _.forEach(languages, function(language) {
