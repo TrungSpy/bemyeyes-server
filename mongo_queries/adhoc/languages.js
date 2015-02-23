@@ -1,9 +1,8 @@
 load('/usr/local/src/lodash/lodash.min.js');
 
-var languages = [];
 var language_count = [];
 
-languages = db.users.distinct( 'languages' );
+var languages = db.users.distinct( 'languages' );
 
 _.forEach(languages, function(language) {
   var helpers_count = db.users.count( { languages: { $in: [ language ] }, role:"helper" } );
