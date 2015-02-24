@@ -17,7 +17,7 @@ module ZeroPushIphoneNotifier
   end
 
   def send_notifications request, device_tokens
-    fiber = Fiber.new do
+    thread = Thread.new do
       initialize_zero_push
       # Create notification
       user = request.blind
@@ -37,7 +37,7 @@ module ZeroPushIphoneNotifier
       ZeroPush.notify(notification)
     end
 
-    fiber.resume
+    thread.join
 
     device_tokens.each do |token|
       TheLogger.log.info("sending request to token device #{token} for request #{request.id} handled by #{self.class.to_s}")
@@ -45,7 +45,7 @@ module ZeroPushIphoneNotifier
   end
 
   def send_reset_notifications device_tokens
-    fiber = Fiber.new do
+    thread = Thread.new do
 
       initialize_zero_push
       # Create notification
@@ -58,7 +58,7 @@ module ZeroPushIphoneNotifier
       ZeroPush.notify(notification)
     end
 
-    fiber.resume
+    thread.join
 
     device_tokens.each do |token|
       TheLogger.log.info("sending reset request to token device #{token}, handled by #{self.class.to_s}")
@@ -68,13 +68,13 @@ module ZeroPushIphoneNotifier
 
   def register_device(device_token, _options = {})
     begin
-      fiber = Fiber.new do
+      thread = Thread.new do
         initialize_zero_push
         ZeroPush.register(device_token)
         TheLogger.log.info "Register device handled by: " + self.class.to_s
       end
 
-      fiber.resume
+      thread.join
     rescue Errno::ETIMEDOUT, Faraday::SSLError, Faraday::TimeoutError => e
       TheLogger.log.error "unable to register device with token #{device_token} #{e}"
       device = Device.first(:device_token => device_token)
