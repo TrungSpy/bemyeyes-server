@@ -11,6 +11,11 @@ class App < Sinatra::Base
       begin
         should_be_authenticated
         device_token = body_params["device_token"]
+        if device_token.nil? || device_token.length == 0
+          TheLogger.log.info "device_token blank #{current_user.email}"
+          return { "result" => "error", "message" => "device_token blank" }.to_json
+        end
+
         device_name = body_params["device_name"]
         model = body_params["model"]
         system_version = body_params["system_version"]
@@ -33,11 +38,9 @@ class App < Sinatra::Base
   end # End namespace /devices
 
   def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
-
-    device = Device.first(device_token: device_token)
-    unless device.nil?
-      device.destroy
-    end
+    Device.destroy_all(device_token: device_token)
+    current_user.devices.delete_if {|device| device.device_token = device_token }
+    current_user.save!
 
     begin
       device = Device.new
@@ -59,7 +62,7 @@ class App < Sinatra::Base
       device.save!
       device
     rescue Exception => e
-      give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device").to_json
+      give_error(400, ERROR_DEVICE_ALREADY_EXIST, "Error updating device, error:#{e}, device_token: #{device_token}").to_json
     end
   end
 end

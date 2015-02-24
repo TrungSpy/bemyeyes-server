@@ -1,4 +1,5 @@
 require_relative '../helpers/requests_helper'
+require_relative '../helpers/i_find_helpers_for_request'
 require_relative '../helpers/requests_helper_factory'
 
 class App < Sinatra::Base
@@ -8,6 +9,10 @@ class App < Sinatra::Base
   namespace '/requests' do
     # Create new request
     post '/?' do
+
+      if current_user.blocked
+        {status:"blocked"}.to_json
+      end
 
       begin
         session = OpenTokSDK.create_session media_mode: :relayed
@@ -26,8 +31,9 @@ class App < Sinatra::Base
       request.answered = false
       request.save!
 
-      requests_helper.check_requests 1
+      i_find_helpers_for_requests.start request
 
+      TheLogger.log.info "request started #{request}"
       EventBus.announce(:request_created, request_id: request.id)
       return request.to_json
     end
@@ -40,6 +46,12 @@ class App < Sinatra::Base
 
     # Answer a request
     put '/:short_id/answer' do
+      unless current_user
+        TheLogger.log.error "Trying to answer request, but no user"
+        # TODO: right now telling the user that the request is stopped is the best we can do.
+        give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
+      end
+
       request = request_from_short_id(params[:short_id])
 
       if request.answered?
@@ -57,11 +69,6 @@ class App < Sinatra::Base
 
     # A helper can cancel his own answer. This should only be done if the session has not already started.
     put '/:short_id/answer/cancel' do
-      begin
-        auth_token = body_params["token"]
-      rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
-      end
       request = request_from_short_id(params[:short_id])
 
       if request.helper.nil?
@@ -117,8 +124,9 @@ class App < Sinatra::Base
     end
   end # End namespace /request
 
-  def requests_helper
-    RequestsHelperFactory.create settings
+  def i_find_helpers_for_requests
+    requests_helper ||= RequestsHelperFactory.create settings
+    BME::IFindHelpersForRequest.new requests_helper
   end
 
   # Find a request from a short ID

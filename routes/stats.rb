@@ -1,3 +1,4 @@
+require 'redis'
 require "sinatra/jsonp"
 
 class App < Sinatra::Base
@@ -5,19 +6,25 @@ class App < Sinatra::Base
   helpers Sinatra::Jsonp
   namespace '/stats' do
     get '/community' do
-      return jsonp ({ 'blind' => Blind.count, 'helpers' => Helper.count, 'no_helped' =>Request.count })
+      result = $redis.hgetall("community_stats")
+      if result.empty?
+        result = {"blind" => Blind.count, "helpers" => Helper.count, "no_helped" => Request.count}
+        $redis.mapped_hmset("community_stats", result)
+        $redis.expire("community_stats", 10)
+      end
+      return jsonp ({blind: result["blind"].to_i, helpers: result["helpers"].to_i, no_helped:result["no_helped"].to_i})
     end
 
     get '/profile/:auth_token' do
-       begin
-      no_helped = Request.count(helper_id: current_helper._id, answered: true)
-      total_points = current_helper.points
-      events = get_point_events current_helper
-      current_level =  user_level_to_BMELevel current_helper.user_level
-      next_level = user_level_to_BMELevel current_helper.user_level.next_user_level
+      begin
+        no_helped = Request.count(helper_id: current_helper._id, answered: true)
+        total_points = current_helper.points
+        events = get_point_events current_helper
+        current_level =  user_level_to_BMELevel current_helper.user_level
+        next_level = user_level_to_BMELevel current_helper.user_level.next_user_level
 
-      return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'current_level'=> current_level, 'next_level' => next_level}.to_json
-       rescue => e
+        return {'no_helped' => no_helped, 'total_points' => total_points, 'events' => events, 'current_level'=> current_level, 'next_level' => next_level}.to_json
+      rescue => e
         give_error(400, ERROR_INVALID_BODY, "#{e.message}").to_json
       end
     end

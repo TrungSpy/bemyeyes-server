@@ -1,4 +1,6 @@
 class Helper < User
+  extend ModelAddOns::TimeConcerns
+
   many :helper_request, :foreign_key => :helper_id, :class_name => "HelperRequest"
   many :helper_points, :foreign_key => :user_id, :class_name => "HelperPoint"
   many :request, :foreign_key => :request_id, :class_name => "Request"
@@ -29,14 +31,6 @@ class Helper < User
   def points
     self.helper_points.inject(0){|sum,x| sum + x.point }
   end
-
-  def self.helpers_who_speaks_blind_persons_language request
-    raise 'no blind person in call' if request.blind.nil?
-    languages_of_blind = request.blind.languages
-    TheLogger.log.debug "languages_of_blind #{languages_of_blind}"
-    Helper.where(:languages => {:$in => languages_of_blind})
-  end
-
   def waiting_requests
     request_ids = HelperRequest
     .where(:helper_id => _id, :cancelled => false)
@@ -50,52 +44,25 @@ class Helper < User
   # khebbie test
   def available request=nil, limit=5
     begin
+      raise 'no blind person in call' if request.blind.nil?
+       languages_of_blind = request.blind.languages ||["en"]
+       now = Time.now.utc
+       now_in_seconds_since_midnight = Helper.time_to_seconds_since_midnight now, 0
+
       request_id = request.present? ? request.id : nil
       contacted_helpers = HelperRequest
       .where(:request_id => request_id)
       .fields(:helper_id)
       .all
-      .collect(&:helper_id)
+      .collect(&:helper_id) || []
+      contacted_helpers.compact!
       TheLogger.log.debug "contacted_helpers #{contacted_helpers}"
 
-      logged_in_users = User
-      .where(:expiry_time.gt => Time.now)
-      .fields(:_id)
-      .all
-      .collect(&:_id)
-      TheLogger.log.debug "logged_in_users #{logged_in_users}"
-
-      abusive_helpers = User
-      .where('abuse_reports.blind_id' => request.blind_id)
-      .fields(:_id)
-      .all
-      .collect(&:_id)
-      TheLogger.log.debug "abusive_helpers #{abusive_helpers}"
-
-      blocked_users = User
-      .where(:blocked => true)
-      .fields(:user_id)
-      .all
-      .collect(&:user_id)
-      TheLogger.log.debug "blocked_users #{blocked_users}"
-
-      asleep_users = User.asleep_users
-      .where(:role=> 'helper')
-      .fields(:user_id)
-      .all
-      .collect(&:user_id)
-      TheLogger.log.debug "asleep_users #{asleep_users}"
-
-      helpers_who_speaks_blind_persons_language = Helper.helpers_who_speaks_blind_persons_language(request)
-      .fields(:user_id)
-      .all
-      .collect(&:user_id)
-      TheLogger.log.debug "helpers_who_speaks_blind_persons_language #{helpers_who_speaks_blind_persons_language}"
-
-      helpers_in_a_call = Request.running_requests
+       helpers_in_a_call = Request.running_requests
       .fields(:helper_id)
       .all
-      .collect(&:helper_id)
+      .collect(&:helper_id) || []
+      helpers_in_a_call.compact!
       TheLogger.log.debug "helpers_in_a_call #{helpers_in_a_call}"
 
         Helper.where(
@@ -104,17 +71,20 @@ class Helper < User
         {:available_from => nil},
         {:available_from.lt => Time.now.utc}
     ])
-    .where(:user_id.nin => asleep_users)
-    .where(:id.nin => abusive_helpers)
-    .where(:id.in => logged_in_users)
-    .where(:user_id.nin => blocked_users)
-    .where(:user_id.in => helpers_who_speaks_blind_persons_language)
+    .where(
+      :go_to_sleep_in_seconds_since_midnight.gte => now_in_seconds_since_midnight,
+      :wake_up_in_seconds_since_midnight.lte => now_in_seconds_since_midnight)
+    .where('abuse_reports.blind_id' => {"$ne" =>  request.blind_id})
+    .where(:expiry_time.gt => Time.now)
+    .where(:blocked => false)
+    .where(:languages => {:$in => languages_of_blind})
     .where(:user_id.nin => helpers_in_a_call)
     .where(:inactive => false)
-    .sort(:last_help_request.desc)
+    .sort(:last_help_request.asc)
     .all.sample(limit)
     rescue Exception => e
-      TheLogger.log.error e.message
+      TheLogger.log.fatal "Fatal trying to find available helpers #{e.message}"
+      []
     end
   end
 end

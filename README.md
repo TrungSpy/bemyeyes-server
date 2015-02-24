@@ -4,6 +4,7 @@ BeMyEyes Server
 Whenever the iOs app makes a request it calls this API.  
 
 [![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
+[![Stories in Ready](https://badge.waffle.io/bemyeyes/bemyeyes-server.svg?label=ready&title=Ready)](http://waffle.io/bemyeyes/bemyeyes-server)
 
 ##Getting started  
 You can either use vagrant to run the site - this is the prefered way  
@@ -50,3 +51,13 @@ At the moment the tests are hardcoded to test against localhost:9001 which is th
 ##Model
 ![alt text](http://yuml.me/f0847fc8 "Model")
 
+# Collaboration
+
+[![Throughput Graph](https://graphs.waffle.io/bemyeyes/bemyeyes-server/throughput.svg)](https://waffle.io/bemyeyes/bemyeyes-server/metrics)
+
+We are using [Waffle](https://waffle.io/bemyeyes/bemyeyes-server) to manage Github issues. It has two-way sync by adding and removing tags like:
+- Ready – Done discussing, do!
+- In progress – Someone is working on this one
+
+You can see priorities on [Waffle](https://waffle.io/bemyeyes/bemyeyes-server) – top = first.
+Admins of this repo can make the changes. 

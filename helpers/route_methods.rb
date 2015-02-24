@@ -2,9 +2,14 @@ class App < Sinatra::Base
   before do
     return unless request.post? || request.put?
     begin
-      body_as_string = request.body.read
-      @body_params = JSON.parse(body_as_string)
-
+      unless request.body.nil?
+        body_as_string = request.body.read
+        if body_as_string.length != 0
+          request.body.rewind
+           @body_params = JSON.parse(body_as_string)
+        end
+        
+      end
     rescue  => e
       TheLogger.log.error "Could not parse body as JSON #{e.message}"
     end
@@ -29,20 +34,19 @@ class App < Sinatra::Base
   end
 
   def current_helper
-    helper = Helper.first(_id: current_user._id)
-    helper
+   @helper ||= Helper.first(:_id => current_user._id)
   end
  
   def helper_from_id(user_id)
-    model_from_id(user_id, Helper, ERROR_USER_NOT_FOUND, "No helper found.")
+    @helper_from_id ||= model_from_id(user_id, Helper, ERROR_USER_NOT_FOUND, "No helper found.")
   end
 
   def user_from_id(user_id)
-    model_from_id(user_id, User, ERROR_USER_NOT_FOUND, "No user found.")
+    @user_from_id ||= model_from_id(user_id, User, ERROR_USER_NOT_FOUND, "No user found.")
   end
 
   def model_from_id(id, model_class, code, message)
-    model = model_class.first(_id: id)
+    model = model_class.first(:_id => id)
     if model.nil?
       give_error(400, code, message).to_json
     end

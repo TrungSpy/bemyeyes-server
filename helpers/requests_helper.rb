@@ -65,6 +65,7 @@ class RequestsHelper
   end
 
   def check_requests(number_of_helpers)
+    TheLogger.log.info "checking requests for #{number_of_helpers} helper(s)"
     @waiting_requests = WaitingRequests.new
     requests = @waiting_requests.get_waiting_requests_from_last 18.seconds.ago
     requests.each { |request| check_request(request, number_of_helpers) }

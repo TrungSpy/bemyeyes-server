@@ -17,51 +17,71 @@ module ZeroPushIphoneNotifier
   end
 
   def send_notifications request, device_tokens
-    initialize_zero_push
-    # Create notification
-    user = request.blind
-    notification_args_name = user.to_s
-    notification = {
-      device_tokens: device_tokens,
-        alert: {
+    fiber = Fiber.new do
+      initialize_zero_push
+      # Create notification
+      user = request.blind
+      notification_args_name = user.to_s
+      notification = {
+        :device_tokens => device_tokens,
+        :alert => {
           :"loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_MESSAGE",
-          :"loc-args" => [ notification_args_name ],
+          :"loc-args" => [ "Be My Eyes"],
           :"action-loc-key" => "PUSH_NOTIFICATION_ANSWER_REQUEST_ACTION",
           short_id: request.short_id,
         }, 
         sound: "call.aiff",
         badge: 1,
-    }
-    # Send notification
-    ZeroPush.notify(notification)
-    device_tokens.each do |token|
-      TheLogger.log.info("sending request to token device " + token)
+      }
+      # Send notification
+      ZeroPush.notify(notification)
     end
-    TheLogger.log.info "Push notification handled by: " + self.class.to_s
 
+    fiber.resume
+
+    device_tokens.each do |token|
+      TheLogger.log.info("sending request to token device #{token} for request #{request.id} handled by #{self.class.to_s}")
+    end
   end
 
   def send_reset_notifications device_tokens
-    initialize_zero_push
-    # Create notification
-    notification = {
-      device_tokens: device_tokens,
-     
+    fiber = Fiber.new do
+
+      initialize_zero_push
+      # Create notification
+      notification = {
+        :device_tokens => device_tokens,
+
         badge: 0,
-    }
-    # Send notification
-    ZeroPush.notify(notification)
-    device_tokens.each do |token|
-      TheLogger.log.info("sending reset request to token device " + token)
+      }
+      # Send notification
+      ZeroPush.notify(notification)
     end
-    TheLogger.log.info "Push notification handled by: " + self.class.to_s
+
+    fiber.resume
+
+    device_tokens.each do |token|
+      TheLogger.log.info("sending reset request to token device #{token}, handled by #{self.class.to_s}")
+    end
   end
 
 
   def register_device(device_token, _options = {})
-    initialize_zero_push
-    ZeroPush.register(device_token)
-    TheLogger.log.info "Register device handled by: " + self.class.to_s
+    begin
+      fiber = Fiber.new do
+        initialize_zero_push
+        ZeroPush.register(device_token)
+        TheLogger.log.info "Register device handled by: " + self.class.to_s
+      end
+
+      fiber.resume
+    rescue Errno::ETIMEDOUT, Faraday::SSLError, Faraday::TimeoutError => e
+      TheLogger.log.error "unable to register device with token #{device_token} #{e}"
+      device = Device.first(:device_token => device_token)
+      device.inactive = true
+      device.save
+    end
+
   end
 
   def unregister_device(device_token, _options = {})
