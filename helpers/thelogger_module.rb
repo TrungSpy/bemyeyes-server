@@ -4,8 +4,14 @@ class BMELogger
  attr_accessor :level
  attr_accessor :formatter
 
-  def loggger
+ def level
+  @level ||= Logger::INFO
+ end
+
+  def logger
     @log ||= Logger.new('log/app.log', 'daily')
+    @log.level = level
+    @log
   end
 
   def logster_logger
@@ -31,27 +37,27 @@ class BMELogger
   def error(message)
     message = message + " \nurl #{url}"
     logster_logger.error message unless logster_logger.nil?
-    loggger.error message
+    logger.error message
   end
 
   def debug(message)
     logster_logger.debug message unless logster_logger.nil?
-    loggger.debug message
+    logger.debug message
   end
 
   def info(message)
     logster_logger.info message  unless logster_logger.nil?
-    loggger.info message
+    logger.info message
   end
 
   def warn(message)
     logster_logger.warn message unless logster_logger.nil?
-    loggger.warn message
+    logger.warn message
   end
 
   def fatal(message)
     logster_logger.fatal message unless logster_logger.nil?
-    loggger.fatal message
+    logger.fatal message
   end
 end
 
