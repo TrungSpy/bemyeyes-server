@@ -19,6 +19,7 @@ gem 'redis'
 gem 'event_bus'
 gem 'sinatra-jsonp'
 gem 'zero_push'
+gem 'sucker_punch', '~> 1.0'
 group :development, :test do
   gem 'rspec-mocks'
   gem 'factory_girl'
