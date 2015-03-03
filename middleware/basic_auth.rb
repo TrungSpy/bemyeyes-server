@@ -38,10 +38,8 @@ module BME
       auth_config = @settings['authentication']
       @auth =  Rack::Auth::Basic::Request.new(env)
       if @auth.provided?
-        $stdout.puts @auth.credentials
       end
       @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [auth_config['username'], auth_config['password']]
     end
   end
 end
-

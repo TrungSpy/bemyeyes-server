@@ -55,8 +55,6 @@ module BME
       unless auth_token.nil?
         user = User.first(auth_token: auth_token)
         unless user.nil?
-          $stdout.puts "user #{user}"
-          print "user #{user}"
           env['current_user'] = user
           env['authenticated'] = true
         end
