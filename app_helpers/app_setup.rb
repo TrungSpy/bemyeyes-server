@@ -27,8 +27,8 @@ class App < Sinatra::Base
         #unregister_device_with_urban_airship = UnRegisterDeviceWithUrbanAirship.new requests_helper
         #EventBus.subscribe(:user_logged_out, unregister_device_with_urban_airship, :user_logged_out)
 
-        register_device_with_urban_airship = RegisterDeviceWithUrbanAirship.new requests_helper
-        EventBus.subscribe(:device_created_or_updated, register_device_with_urban_airship, :register)
+        register_device = RegisterDevice.new requests_helper
+        EventBus.subscribe(:device_created_or_updated, register_device, :register)
         EventBus.subscribe(:try_answer_request_but_already_answered, AssignHelperPointsOnTryAnswerAnsweredRequest.new, :answer_request)
         EventBus.subscribe(:abuse_report_filed, CreateAbuseReport.new, :abuse_report_filed)
         EventBus.subscribe(:abuse_report_filed, ThreeStrikesAndYouAreOut.new, :abuse_report_filed)
