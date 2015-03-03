@@ -10,7 +10,7 @@ class App < Sinatra::Base
       if result.empty?
         result = {"blind" => Blind.count, "helpers" => Helper.count, "no_helped" => Request.count}
         $redis.mapped_hmset("community_stats", result)
-        $redis.expire("community_stats", 10)
+        $redis.expire("community_stats", 20)
       end
       return jsonp ({blind: result["blind"].to_i, helpers: result["helpers"].to_i, no_helped:result["no_helped"].to_i})
     end
@@ -56,7 +56,7 @@ class App < Sinatra::Base
         completed_point_events = get_point_events current_helper
         all_point_events = get_points_events_from_hash HelperPoint.actionable_points
 
-        remaining_tasks = 
+        remaining_tasks =
         all_point_events.select do |point|
            not completed_point_events.any? { | completed_point | completed_point.event== point.event}
         end
