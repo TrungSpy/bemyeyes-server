@@ -90,7 +90,13 @@ class App < Sinatra::Base
 
     # The blind or a helper can disconnect from a started session thereby stopping the session.
     put '/:short_id/disconnect' do
+      should_be_authenticated
       request = request_from_short_id(params[:short_id])
+
+      if request.blind._id.nil? || request.helper._id.nil?
+        give_error(400, ERROR_REQUEST_NO_BLIND_OR_NO_HELPER, "The request has no blind or no helper, hence it cannot be stopped").to_json
+        return
+      end
 
       if request.stopped?
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
