@@ -61,6 +61,8 @@ class App < Sinatra::Base
         EventBus.announce(:try_answer_request_but_already_stopped, request_id: request.id, helper:current_helper)
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       else
+        request.answered = true
+        request.helper = current_helper
         EventBus.announce(:request_answered, request_id: request.id, helper:current_helper)
 
         return request.to_json
