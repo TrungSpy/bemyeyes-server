@@ -24,7 +24,7 @@ module BME
          Thread.exit
        end
        number_of_helpers_to_call = get_number_of_helpers_to_call iteration
-        @requests_helper.check_request request, 1
+        @requests_helper.check_request request, number_of_helpers_to_call
         TheLogger.log.info "finished finding helpers"
         sleep 4 # seconds
       end
