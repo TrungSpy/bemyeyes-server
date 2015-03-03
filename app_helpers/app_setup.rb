@@ -12,9 +12,10 @@ class App < Sinatra::Base
 #        EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
         # This should be changed hack for now
         EventBus.subscribe(:request_stopped, MarkRequestAnswered.new, :request_answered)
-        EventBus.subscribe(:request_stopped, requests_helper, :request_answered)
-        EventBus.subscribe(:request_answered, requests_helper, :request_answered)
-        EventBus.subscribe(:request_cancelled, requests_helper, :request_answered)
+        send_reset_notifications = SendResetNotifications.new requests_helper
+        EventBus.subscribe(:request_stopped, send_reset_notifications, :send)
+        EventBus.subscribe(:request_answered, send_reset_notifications, :send)
+        EventBus.subscribe(:request_cancelled, send_reset_notifications, :send)
         EventBus.subscribe(:request_cancelled, MarkHelperRequestCancelled.new, :helper_request_cancelled)
         EventBus.subscribe(:request_cancelled, MarkRequestNotAnsweredAnyway.new, :request_cancelled)
         EventBus.subscribe(:helper_notified, MarkHelperNotified.new, :helper_notified)
