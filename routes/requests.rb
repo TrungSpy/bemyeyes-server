@@ -63,6 +63,7 @@ class App < Sinatra::Base
       else
         request.answered = true
         request.helper = current_helper
+        request.save!
         EventBus.announce(:request_answered, request_id: request.id, helper:current_helper)
 
         return request.to_json
