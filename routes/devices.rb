@@ -38,6 +38,7 @@ class App < Sinatra::Base
   end # End namespace /devices
 
   def update_device(device_token, device_name, model, system_version, app_version, app_bundle_version, locale, development, inactive)
+    blocked = Device.is_blocked_user device_token
     Device.destroy_all(device_token: device_token)
     current_user.devices.delete_if {|device| device.device_token = device_token }
     current_user.save!
@@ -57,6 +58,7 @@ class App < Sinatra::Base
       device.inactive = inactive
 
       current_user.devices.push(device)
+      current_user.blocked = blocked
       current_user.save!
 
       device.save!

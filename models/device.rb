@@ -14,4 +14,9 @@ class Device
   key :inactive, Boolean, default: false
 
   timestamps!
+
+  def self.is_blocked_user device_token
+     devices = Device.where(device_token:device_token).all
+    devices.find_all {|device| device.user.blocked}.length > 0
+  end
 end

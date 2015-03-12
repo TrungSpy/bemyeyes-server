@@ -46,4 +46,23 @@ describe "device update" do
 
     expect(Device.where(device_token: my_device_token).count).to eq(1)
   end
+
+  it "assigns blocked to new device_token with already blocked user" do
+    my_device_token = "my very special device token"
+    id, auth_token = create_user
+    register_device auth_token, my_device_token
+
+    user = User.first(_id:id)
+    user.blocked = true
+    user.save
+
+    new_email = create_unique_email
+    id, new_auth_token = create_user "helper",new_email
+    register_device new_auth_token, my_device_token
+
+    new_user = User.first(email:new_email)
+
+    expect(new_user.blocked).to be(true)
+
+  end
 end
