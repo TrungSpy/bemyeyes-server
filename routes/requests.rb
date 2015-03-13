@@ -11,7 +11,7 @@ class App < Sinatra::Base
     post '/?' do
 
       if current_user.blocked
-        {status:"blocked"}.to_json
+        halt 200, {'Content-Type' => 'application/json'}, {status:"blocked"}.to_json
       end
 
       begin

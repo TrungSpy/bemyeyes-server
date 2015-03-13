@@ -60,4 +60,17 @@ describe "Request" do
     #yeah I know its the same helper, but that is not important now
     expect{answer_request short_id, helper_token}.to raise_error(RestClient::BadRequest)
   end
+
+  it "won't allow blocked users to make a call" do
+    id, auth_token = create_user 'blind'
+    blind = User.first(_id:id)
+    blind.blocked = true
+    blind.save!
+
+    log_user_in
+    short_id = create_request auth_token
+
+    expect(short_id).to be_nil
+
+  end
 end
