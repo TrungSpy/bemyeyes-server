@@ -35,10 +35,15 @@ module BME
     end
 
     def get_param_from_rack_input env, param_name
+      begin
       input = JSON.parse env['rack.input'].read
       env['rack.input'].rewind
       value = input[param_name]
       value
+      rescue => e
+        warn "Error in BME::Auth middleware get_param_from_rack_input #{e.message} #{get_stacktrace}"
+        return ""
+      end
     end
 
     def get_auth_token_from_query_string url
