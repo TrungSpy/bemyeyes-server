@@ -21,7 +21,6 @@ class ExportToMixpanel
         "short_id" => request.short_id,
         "iteration" => request.iteration,
         "answered" => request.answered,
-        "helper_id" => request.helper.id,
         "token" => request.token
 })
         puts '.'
