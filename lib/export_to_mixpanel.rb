@@ -8,7 +8,7 @@ class ExportToMixpanel
   end
 
   def Export
-    User.find_each(role:"helper") do |user| 
+    User.find_each(role:"blind") do |user| 
       $tracker.people.set(user._id, {
         '$first_name'       => user.first_name,
         '$last_name'        => user.last_name,
