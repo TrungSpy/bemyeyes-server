@@ -15,7 +15,7 @@ class ExportToMixpanel
   private
   def export_requests
     Request.find_each() do |request|
-        tracker.track(request.blind_id, 'Request', {
+        $tracker.track(request.blind_id, 'Request', {
           "created_at" => request.created_at,
         "updated_at" => request.updated_at,
         "short_id" => request.short_id,
