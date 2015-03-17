@@ -44,3 +44,5 @@ gem 'rake'
 
 gem 'newrelic_rpm'
 gem 'logster'
+gem 'mixpanel-ruby'
+

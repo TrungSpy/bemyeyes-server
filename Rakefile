@@ -2,6 +2,7 @@ require 'rspec/core/rake_task'
 require './app.rb'
 require './lib/mongomodel.rb'
 require './lib/create_user_levels.rb'
+require './lib/export_to_mixpanel.rb'
 
 RSpec::Core::RakeTask.new(:spec)
 
@@ -15,6 +16,9 @@ task :create_user_levels do
   CreateUserLevels.create_levels
 end
 
+task :export_to_mixpanel do
+  ExportToMixpanel.new.Export
+end
 
 task :add_signup_points_to_all_helpers do
   Helper.find_each() do |helper|
