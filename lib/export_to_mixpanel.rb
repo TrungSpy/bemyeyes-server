@@ -8,7 +8,28 @@ class ExportToMixpanel
   end
 
   def Export
-    User.find_each(role:"blind") do |user| 
+    #export_users
+    export_requests
+   end
+
+  private
+  def export_requests
+    Request.find_each() do |request|
+        tracker.track(request.blind_id, 'Request', {
+          "created_at" => request.created_at,
+        "updated_at" => request.updated_at,
+        "short_id" => request.short_id,
+        "iteration" => request.iteration,
+        "answered" => request.answered,
+        "helper_id" => request.helper.id,
+        "token" => request.token
+})
+        puts '.'
+    end
+  end
+
+  def export_users
+     User.find_each(role:"blind") do |user| 
       $tracker.people.set(user._id, {
         '$first_name'       => user.first_name,
         '$last_name'        => user.last_name,
@@ -30,5 +51,6 @@ class ExportToMixpanel
       puts '.'
     end
   end
+
 end
 
