@@ -49,16 +49,12 @@ class App < Sinatra::Base
           :username => db_config['username'],
           :password => db_config['password']
         }
-      }, 'production', {:pool_size  => 90, :read => :secondary})
+      }, 'production', {:pool_size  => 90, :read => :primary, :w => 2})
       MongoMapper.database.authenticate(db_config['username'], db_config['password'])
     else
       MongoMapper.connection = Mongo::Connection.new(db_config['host'])
       MongoMapper.database = db_config['name']
-      if db_config.has_key? 'username'
-        MongoMapper.connection[db_config['name']].authenticate(db_config['username'], db_config['password'])
-      else
-        MongoMapper.connection[db_config['name']]
-      end
+      MongoMapper.connection[db_config['name']]
     end
   end
 
