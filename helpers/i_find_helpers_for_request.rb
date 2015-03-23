@@ -13,7 +13,7 @@ module BME
       if number_of_helpers_to_call == 0
         number_of_helpers_to_call = 1
       end
-      [number_of_helpers_to_call,10].max
+      [number_of_helpers_to_call,10].min
     end
 
     def find_helpers_for_request request
