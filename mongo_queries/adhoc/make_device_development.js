@@ -4,3 +4,13 @@ db.devices.update(
       $set: { development: true },
    }
 )
+
+
+db.users.update(
+   { email: "stepen.becket.bbc@gmail.com" },
+   {
+      $set: { email: "stephen.beckett.bbc@gmail.com" },
+   }
+)
+
+
