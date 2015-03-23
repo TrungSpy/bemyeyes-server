@@ -18,10 +18,10 @@ module BME
 
     def find_helpers_for_request request
       500.times do |iteration|
-        TheLogger.log.info "thread finding helpers for request #{request}"
+        TheLogger.log.info "thread finding helpers for request #{request} iteration: #{iteration}"
         request.reload
        if request.stopped || request.answered
-         Thread.exit
+         Thread.current.exit
        end
        number_of_helpers_to_call = get_number_of_helpers_to_call iteration
         @requests_helper.check_request request, number_of_helpers_to_call
