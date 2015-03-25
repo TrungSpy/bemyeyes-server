@@ -134,7 +134,7 @@ class App < Sinatra::Base
 
   # Find a request from a short ID
   def request_from_short_id(short_id)
-    request = Request.first(short_id: short_id)
+    request = Request.with_read_preference(:primary) {Request.first(short_id: short_id)}
     if request.nil?
       give_error(400, ERROR_REQUEST_NOT_FOUND, "Request not found.").to_json
     end

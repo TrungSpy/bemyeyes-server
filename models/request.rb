@@ -1,5 +1,8 @@
+require_relative '../lib/mongo_mapper/plugins/read_preference'
+
 class Request
   include MongoMapper::Document
+  plugin MongoMapper::Plugins::ReadPreference
 
   belongs_to :blind, class_name: "Blind"
   belongs_to :helper, class_name: "Helper"
