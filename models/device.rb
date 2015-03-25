@@ -1,6 +1,5 @@
 class Device
   include MongoMapper::Document
-  plugin MongoMapper::Plugins::ReadPreference
 
   belongs_to :user, class_name: "User"
 
