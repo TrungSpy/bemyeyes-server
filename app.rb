@@ -1,3 +1,5 @@
+root = File.expand_path('../', __FILE__)
+$:.unshift root unless $:.include?(root)
 require 'rubygems'
 require 'sinatra'
 require "sinatra/config_file"
@@ -14,24 +16,24 @@ require 'redis'
 require 'logster'
 require 'pry'
 require 'sucker_punch'
-require_relative 'helpers/requests_helper'
-require_relative 'models/init'
-require_relative 'routes/init'
-require_relative 'event_handlers/init'
-require_relative 'helpers/error_codes'
-require_relative 'helpers/api_error'
-require_relative 'helpers/cron_jobs'
-require_relative 'helpers/thelogger_module'
-require_relative 'helpers/waiting_requests'
-require_relative 'helpers/date_helper'
-require_relative 'helpers/helper_point_checker'
-require_relative 'helpers/ambient_request'
-require_relative 'helpers/route_methods'
-require_relative 'app_helpers/app_setup'
-require_relative 'app_helpers/logster_setup.rb'
-require_relative 'app_helpers/setup_logger'
-require_relative 'middleware/auth'
-require_relative 'middleware/basic_auth'
+require 'helpers/requests_helper'
+require 'models/init'
+require 'routes/init'
+require 'event_handlers/init'
+require 'helpers/error_codes'
+require 'helpers/api_error'
+require 'helpers/cron_jobs'
+require 'helpers/thelogger_module'
+require 'helpers/waiting_requests'
+require 'helpers/date_helper'
+require 'helpers/helper_point_checker'
+require 'helpers/ambient_request'
+require 'helpers/route_methods'
+require 'app_helpers/app_setup'
+require 'app_helpers/logster_setup.rb'
+require 'app_helpers/setup_logger'
+require 'middleware/auth'
+require 'middleware/basic_auth'
 
 I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
@@ -50,6 +52,16 @@ class App < Sinatra::Base
           :password => db_config['password']
         }
       }, 'production', {:pool_size  => 40, :read => :secondary})
+      MongoMapper.database.authenticate(db_config['username'], db_config['password'])
+    elsif db_config['is_development']
+      MongoMapper.setup({
+        'development' => {
+          'database' => db_config['name'],
+          'hosts' => db_config['hosts'],
+          :username => db_config['username'],
+          :password => db_config['password']
+        }
+      }, 'development', {:pool_size  => 40, :read => :secondary, :name => 'rs0'})
       MongoMapper.database.authenticate(db_config['username'], db_config['password'])
     else
       MongoMapper.connection = Mongo::Connection.new(db_config['host'])
