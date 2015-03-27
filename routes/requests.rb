@@ -19,7 +19,7 @@ class App < Sinatra::Base
         session_id = session.session_id
         token = OpenTokSDK.generate_token session_id
       rescue Exception => e
-        give_error(500, ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created.")
+        give_error(500, ERROR_REQUEST_SESSION_NOT_CREATED, "The session could not be created. #{e}")
       end
 
       # Store request in database
@@ -38,7 +38,6 @@ class App < Sinatra::Base
       return request.to_json
     end
 
-    # Get a request
     get '/:short_id' do
       TheLogger.log.info("get request, shortId:  " + params[:short_id] )
       return request_from_short_id(params[:short_id]).to_json
@@ -54,10 +53,10 @@ class App < Sinatra::Base
 
       request = request_from_short_id(params[:short_id])
 
-      if request.answered?
+      if request.answered
         EventBus.announce(:try_answer_request_but_already_answered, request_id: request.id, helper:current_helper)
         give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
-      elsif request.stopped?
+      elsif request.stopped
         EventBus.announce(:try_answer_request_but_already_stopped, request_id: request.id, helper:current_helper)
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
       else
@@ -108,7 +107,7 @@ class App < Sinatra::Base
       begin
         rating = body_params["rating"]
       rescue Exception => e
-        give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
+        give_error(400, ERROR_INVALID_BODY, "The body is not valid. #{e}").to_json
       end
 
       request = request_from_short_id(params[:short_id])
