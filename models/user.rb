@@ -38,7 +38,7 @@ class User
   key :last_name, String, :required => true
   #The iso 639-1 2 letter code
   key :languages, Array, :default => ["da","en"]
-  key :user_id, Integer, :unique => true #, :required => true #Unique identifier from FB
+  key :user_id, String, :unique => true #, :required => true #Unique identifier from FB
   key :role, String, :required => true
   key :available_from, Time
   key :snooze_period, String
