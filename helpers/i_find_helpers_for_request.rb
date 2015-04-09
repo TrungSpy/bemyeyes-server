@@ -9,10 +9,7 @@ module BME
     end
 
     def get_number_of_helpers_to_call iteration
-      number_of_helpers_to_call = iteration / 2
-      if number_of_helpers_to_call == 0
-        number_of_helpers_to_call = 1
-      end
+      number_of_helpers_to_call = [(iteration / 2), 1].max
       [number_of_helpers_to_call,10].min
     end
 
