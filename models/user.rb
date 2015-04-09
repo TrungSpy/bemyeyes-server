@@ -11,20 +11,7 @@ DEFAULT_GO_TO_SLEEP_HOUR = 22
 class User
   include MongoMapper::Document
   extend ModelAddOns::TimeConcerns
-  SCHEMA = {
-    "type" => "object",
-    "required" => [],
-    "additionalProperties" => false,
-    "properties" => {
-      "user_id" => {"type" => "integer"},
-      "password" => {"type" => "string"},
-      "email" => {"type" => "string"},
-      "first_name" => {"type" => "string"},
-      "last_name" => {"type" => "string"},
-      "role" => {"type" => "string"},
-      "languages" => {"type" => "array"},
-    }
-  }
+
   safe
 
   many :devices, :foreign_key => :user_id, :class_name => "Device"
