@@ -5,8 +5,7 @@ class App < Sinatra::Base
   namespace '/users' do
     def validate_body_for_create_user
       begin
-        required_fields = {"required" => ["email", "first_name", "last_name", "role"]}
-        schema = User::SCHEMA.merge(required_fields)
+        schema = {"required" => ["email", "first_name", "last_name", "role"]  }
         JSON::Validator.validate!(schema, body_params)
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
@@ -80,16 +79,16 @@ class App < Sinatra::Base
 
     # Update a user
     put '/:user_id' do
-      user = user_from_id(params[:user_id])
+      user = user_from_id(params[:user_id].to_s)
       begin
-        JSON::Validator.validate!(User::SCHEMA, body_params)
+        JSON::Validator.validate!({}, body_params)
         user.update_attributes!(body_params)
       rescue Exception => e
         puts e.message
         give_error(400, ERROR_INVALID_BODY, "The body is not valid.").to_json
       end
       EventBus.announce(:user_updated, user: user)
-      return user
+      return user.to_json
     end
 
     def is_24_hour_string the_str
