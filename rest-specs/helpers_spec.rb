@@ -23,11 +23,12 @@ describe "Helpers" do
   end
 
   it "returns id of waiting requests" do
-    skip("timing issue")
+    skip("slow spec")
     blind_token = create_blind_ready_to_make_request
     _helper_token, helper_id = create_helper_ready_for_call
 
     request_id = create_request(blind_token)
+    sleep(9)
 
     expect(HelperRequest.count(helper_id: helper_id)).to eq(1)
 
@@ -43,8 +44,7 @@ describe "Helpers" do
     expect(response.code).to eq(200)
 
     jsn = JSON.parse response.body
-    id = jsn['id']
-    id
+    jsn['id']
   end
 
   def create_blind_ready_to_make_request
@@ -57,7 +57,6 @@ describe "Helpers" do
     email = create_unique_email
     password = encrypt_password 'helperPassword'
     user_id, auth_token = create_user role, email, password
-    log_user_in email, password
     register_device auth_token, 'device_token', 'iPhone'
 
     return auth_token, user_id
