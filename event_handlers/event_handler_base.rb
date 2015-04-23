@@ -1,3 +1,5 @@
+require 'yaml'
+
 class EventHandlerBase
   include ActiveSupport::Rescuable
   rescue_from StandardError, with: :known_error
@@ -14,6 +16,11 @@ class EventHandlerBase
     return @request unless @request.nil?
     @request ||= Request.first(_id: @payload[:request_id])
     @request
+  end
+
+  def settings
+    @config ||= YAML.load_file('config/config.yml')
+    @config
   end
 
   protected
