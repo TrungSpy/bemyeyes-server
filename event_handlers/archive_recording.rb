@@ -14,7 +14,7 @@ class ArchiveRecording < EventHandlerBase
 
       archive = opentok.archives.create(request.session_id, :name => "helper: " + helper.first_name)
       request.additional_info[:archive_id] = archive.id
-      session.save!
+      request.save!
     rescue Exception => e
       rescue_with_handler(e)
     end
