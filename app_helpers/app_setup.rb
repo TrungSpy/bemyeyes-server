@@ -23,7 +23,9 @@ class App < Sinatra::Base
         EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified)
         EventBus.subscribe(:helper_notified, AssignLastHelpRequestToRequest.new, :helper_notified)
 
-        EventBus.subscribe(:request_answered, StartRecording.new, :start)
+        EventBus.subscribe(:request_answered, ArchiveRecording.new, :start)
+        EventBus.subscribe(:request_stopped, ArchiveRecording.new, :stop)
+        EventBus.subscribe(:request_cancelled, ArchiveRecording.new, :stop)
 
         send_reset_password_mail =SendResetPasswordMail.new settings
         EventBus.subscribe(:rest_password_token_created, send_reset_password_mail, :reset_password_token_created)
