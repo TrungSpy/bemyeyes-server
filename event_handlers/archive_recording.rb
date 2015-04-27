@@ -21,7 +21,7 @@ class ArchiveRecording < EventHandlerBase
 
       archive = opentok.archives.create(request.session_id, :name => "helper: " + helper.first_name)
       TheLogger.log.info "Archive id: #{ archive.id}"
-
+      request.reload
       request.additional_info[:archive_id] = archive.id
       request.save!
     rescue Exception => e
