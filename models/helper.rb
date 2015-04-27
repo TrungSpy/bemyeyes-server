@@ -41,7 +41,6 @@ class Helper < User
   end
 
   #TODO to be improved with snooze functionality
-  # khebbie test
   def available request=nil, limit=5
     begin
       raise 'no blind person in call' if request.blind.nil?
