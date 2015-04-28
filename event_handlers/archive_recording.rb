@@ -14,13 +14,11 @@ class ArchiveRecording < EventHandlerBase
       @payload = payload
 
       unless settings["record_sessions"]
-       TheLogger.log.info "settings #{settings}"
         return
       end
-       TheLogger.log.info "Starting session recording #{request.session_id}"
 
       archive = opentok.archives.create(request.session_id, :name => "helper: " + helper.first_name)
-      TheLogger.log.info "Archive id: #{ archive.id}"
+      TheLogger.log.info "Starting session recording #{request.session_id} Archive id: #{ archive.id}"
       request.reload
       request.additional_info[:archive_id] = archive.id
       request.save!
@@ -33,7 +31,10 @@ class ArchiveRecording < EventHandlerBase
     begin
       @payload = payload
 
-      unless settings["record_sessions"]
+      return unless settings["record_sessions"]
+
+      if request.additional_info[:archive_id].nil?
+        TheLogger.log.error "Can't stop archive no archive id for session  #{request.session_id}"
         return
       end
       TheLogger.log.info "Stopping session recording #{request.session_id}"
