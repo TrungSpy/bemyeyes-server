@@ -25,6 +25,6 @@ class EventHandlerBase
 
   protected
   def known_error(error)
-    TheLogger.log.error "event_handler error #{error.message} #{error.backtrace}"
+    TheLogger.log.error "event_handler error #{error.inspect} #{error.backtrace}"
   end
 end
