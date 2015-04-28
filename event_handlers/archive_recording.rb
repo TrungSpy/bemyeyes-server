@@ -13,9 +13,7 @@ class ArchiveRecording < EventHandlerBase
     begin
       @payload = payload
 
-      unless settings["record_sessions"]
-        return
-      end
+      return unless settings["record_sessions"]
 
       archive = opentok.archives.create(request.session_id, :name => "helper: " + helper.first_name)
       TheLogger.log.info "Starting session recording #{request.session_id} Archive id: #{ archive.id}"
