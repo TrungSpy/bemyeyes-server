@@ -32,7 +32,7 @@ class ArchiveRecording < EventHandlerBase
       @payload = payload
 
       return unless settings["record_sessions"]
-      RecordingJob.new.async.later(2,opentok, request)
+      RecordingJob.new.async.later(5,opentok, request)
 
     rescue Exception => e
       rescue_with_handler(e)
