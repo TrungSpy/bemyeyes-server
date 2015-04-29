@@ -3,6 +3,8 @@ class CreateAbuseReport
         request = payload[:request]
         reporter = payload[:reporter]
         reason = payload[:reason]
+        request.reload
+
         abuse_report = AbuseReport.new
         abuse_report.request = request
         abuse_report.reason = reason
