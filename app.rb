@@ -51,7 +51,7 @@ class App < Sinatra::Base
           :username => db_config['username'],
           :password => db_config['password']
         }
-      }, 'production', {:pool_size  => 40, :read => :secondary})
+      }, 'production', {:pool_size  => 40, :read => :primary})
       MongoMapper.database.authenticate(db_config['username'], db_config['password'])
     elsif db_config['is_development']
       MongoMapper.setup({

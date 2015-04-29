@@ -1,3 +1,5 @@
+require 'yaml'
+
 class EventHandlerBase
   include ActiveSupport::Rescuable
   rescue_from StandardError, with: :known_error
@@ -12,8 +14,13 @@ class EventHandlerBase
     @request
   end
 
+  def settings
+    @config ||= YAML.load_file('config/config.yml')
+    @config
+  end
+
   protected
   def known_error(error)
-    TheLogger.log.error "event_handler error #{error.message} #{error.backtrace}"
+    TheLogger.log.error "event_handler error #{error.inspect} #{error.backtrace}"
   end
 end

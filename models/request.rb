@@ -17,6 +17,7 @@ class Request
   key :stopped, Boolean, default: false
   key :last_help_request, Time, default: Time.new(1970, 1, 1, 0, 0, 0, "+02:00")
   key :iteration, Integer, default: 0
+  key :additional_info, Hash
 
   timestamps!
 

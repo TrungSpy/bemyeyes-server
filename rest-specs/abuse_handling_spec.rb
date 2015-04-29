@@ -52,7 +52,7 @@ describe "abuse handling" do
     user_id = create_user 'blind'
     auth_token = log_user_in
 
-    helper_user_id = create_user 'helper', 'helper@example.com'
+    helper_user_id = create_user 'helper', "helper#{(Time.now.to_f*100000).to_s}@example.com"
     helper = User.first(_id: helper_user_id)
 
     request = create_request_in_db auth_token, helper
