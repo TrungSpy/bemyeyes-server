@@ -7,6 +7,7 @@ class App < Sinatra::Base
     end
 
     def self.setup_event_bus
+      begin
         EventBus.subscribe(:request_stopped, MarkRequestStopped.new, :request_stopped)
         EventBus.subscribe(:request_stopped, AssignHelperPointsOnRequestStopped.new, :request_stopped)
 #        EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
@@ -22,6 +23,10 @@ class App < Sinatra::Base
         EventBus.subscribe(:helper_notified, AssignLastHelpRequest.new, :helper_notified)
         EventBus.subscribe(:helper_notified, AssignLastHelpRequestToRequest.new, :helper_notified)
 
+        EventBus.subscribe(:request_answered, ArchiveRecording.new, :start)
+        EventBus.subscribe(:request_stopped, ArchiveRecording.new, :stop)
+        EventBus.subscribe(:request_cancelled, ArchiveRecording.new, :stop)
+
         send_reset_password_mail =SendResetPasswordMail.new settings
         EventBus.subscribe(:rest_password_token_created, send_reset_password_mail, :reset_password_token_created)
 
@@ -34,6 +39,9 @@ class App < Sinatra::Base
         EventBus.subscribe(:abuse_report_filed, CreateAbuseReport.new, :abuse_report_filed)
         EventBus.subscribe(:abuse_report_filed, ThreeStrikesAndYouAreOut.new, :abuse_report_filed)
         EventBus.subscribe(EventLogger.new)
+      rescue Exception => e
+        TheLogger.log.fatal "fatal event bus error #{e.message}"
+      end
     end
     def self.ensure_indeces
         Helper.ensure_index(:last_help_request)

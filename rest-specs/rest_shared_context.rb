@@ -97,6 +97,12 @@ shared_context "rest-context" do
     RestClient.put cancel_request_url, {'auth_token'=> auth_token}.to_json
   end
 
+  def stop_request short_id, auth_token
+    stop_request_url  = "#{@servername_with_credentials}/requests/#{short_id}/disconnect"
+    response = RestClient.put stop_request_url, {'auth_token'=> auth_token}.to_json
+    expect(response.code).to eq(200)
+  end
+
   def create_unique_email
     "user_#{(Time.now.to_f*100000).to_s}@example.com"
   end

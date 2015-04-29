@@ -48,6 +48,18 @@ describe "Request" do
     expect(Request.first.helper_id).not_to be_nil
   end
 
+   it "can answer request and helper stop again" do
+    create_user 'blind'
+    token = log_user_in
+    short_id = create_request token
+
+    helper_token, _helper_id = create_helper_ready_for_call
+
+    answer_request short_id, helper_token
+
+    stop_request short_id, helper_token
+  end
+
   it "warns user that request is already answered" do
     create_user 'blind'
     token = log_user_in

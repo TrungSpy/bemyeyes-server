@@ -15,7 +15,7 @@ class App < Sinatra::Base
       end
 
       begin
-        session = OpenTokSDK.create_session media_mode: :relayed
+        session = OpenTokSDK.create_session media_mode: :routed
         session_id = session.session_id
         token = OpenTokSDK.generate_token session_id
       rescue Exception => e
@@ -53,12 +53,14 @@ class App < Sinatra::Base
 
       request = request_from_short_id(params[:short_id])
 
-      if request.answered
+      if request.answered || !request.helper.nil?
         EventBus.announce(:try_answer_request_but_already_answered, request_id: request.id, helper:current_helper)
         give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
+        return
       elsif request.stopped
         EventBus.announce(:try_answer_request_but_already_stopped, request_id: request.id, helper:current_helper)
         give_error(400, ERROR_REQUEST_STOPPED, "The request has been stopped.").to_json
+        return
       else
         request.answered = true
         request.helper = current_helper
