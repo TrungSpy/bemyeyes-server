@@ -32,21 +32,21 @@ describe "Helper" do
    reason = 'we are testing'
    reporter = 'blind'
    request = create_request helper, blind
-   EventBus.announce(:abuse_report_filed, request: request, reporter: reporter, reason:reason)
+   EventBus.announce(:abuse_report_filed, request_id: request.id, reporter: reporter, reason:reason)
   end
 
   it "will block user after three reports" do
     helper = build(:helper)
-    helper.save
-
+    helper.save!
 
     blind = build(:blind)
-    blind.save
+    blind.save!
 
     create_abuse_report blind, helper
     create_abuse_report blind, helper
     create_abuse_report blind, helper
 
+    helper.reload
     expect(helper.blocked).to eq(true)
   end
 

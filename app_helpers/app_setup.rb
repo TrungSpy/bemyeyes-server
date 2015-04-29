@@ -11,7 +11,6 @@ class App < Sinatra::Base
         EventBus.subscribe(:request_stopped, AssignHelperPointsOnRequestStopped.new, :request_stopped)
 #        EventBus.subscribe(:request_answered, MarkRequestAnswered.new, :request_answered)
         # This should be changed hack for now
-        EventBus.subscribe(:request_stopped, MarkRequestAnswered.new, :request_answered)
         send_reset_notifications = SendResetNotifications.new requests_helper
         EventBus.subscribe(:request_stopped, send_reset_notifications, :send)
         EventBus.subscribe(:request_answered, send_reset_notifications, :send)

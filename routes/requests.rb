@@ -53,8 +53,8 @@ class App < Sinatra::Base
 
       request = request_from_short_id(params[:short_id])
 
-      if request.answered
-        EventBus.announce(:try_answer_request_but_already_answered, request_id: request.id, helper:current_helper)
+      if request.answered || !request.helper.nil?
+        EventBus.announce(:try_answer_request_but_already_answered, request_id: request.id, helper_id:current_helper.id)
         give_error(400, ERROR_REQUEST_ALREADY_ANSWERED, "The request has already been answered.").to_json
       elsif request.stopped
         EventBus.announce(:try_answer_request_but_already_stopped, request_id: request.id, helper:current_helper)
