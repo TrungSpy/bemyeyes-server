@@ -1,8 +1,9 @@
-class ThreeStrikesAndYouAreOut
-  def abuse_report_filed(payload)
-    request = payload[:request]
-    reporter = payload[:reporter]
+require_relative './event_handler_base'
 
+class ThreeStrikesAndYouAreOut < EventHandlerBase
+  def abuse_report_filed(payload)
+    @payload = payload
+    reporter = payload[:reporter]
     if reporter == "blind"
       check(request.helper)
     else

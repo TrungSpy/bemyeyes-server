@@ -52,7 +52,7 @@ class NotificationHandler
 
   def set_sent_helper devices, request
     devices.each do |device|
-      EventBus.announce(:helper_notified, request: request, helper: device.user )
+      EventBus.announce(:helper_notified, request_id: request.id, helper_id: device.user.id )
     end
   end
 end

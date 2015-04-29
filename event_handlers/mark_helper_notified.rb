@@ -1,7 +1,6 @@
-class MarkHelperNotified
+class MarkHelperNotified < EventHandlerBase
   def helper_notified(payload)
-    request = payload[:request]
-    helper = payload[:helper]
+    @payload = payload
     HelperRequest.create! request: request, helper: helper
   end
 end

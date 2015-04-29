@@ -25,9 +25,8 @@ class App < Sinatra::Base
 
       begin
         reporter = get_reporter_role
-        request = Request.first(id: request_id)
-        
-        EventBus.announce(:abuse_report_filed, request: request, reporter: reporter, reason:reason)
+
+        EventBus.announce(:abuse_report_filed, request_id: request_id, reporter: reporter, reason:reason)
       rescue Exception => e
         give_error(400, ERROR_INVALID_BODY, "Unable to create abuse report").to_json
       end
