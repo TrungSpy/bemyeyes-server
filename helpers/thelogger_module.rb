@@ -18,24 +18,7 @@ class BMELogger
     @logster_logger = $log
   end
 
-  def url
-    ambient_request = AmbientRequest.instance.request
-    unless ambient_request.nil?
-      return ambient_request.url
-    end
-    "unit test"
-  end
-
-  def base_url
-    ambient_request = AmbientRequest.instance.request
-    unless ambient_request.nil?
-      return ambient_request.base_url
-    end
-    "unit test"
-  end
-
   def error(message)
-    message = message + " \nurl #{url}"
     logster_logger.error message unless logster_logger.nil?
     logger.error message
   end
