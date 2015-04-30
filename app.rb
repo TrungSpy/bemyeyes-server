@@ -32,6 +32,7 @@ require_relative 'app_helpers/logster_setup.rb'
 require_relative 'app_helpers/setup_logger'
 require_relative 'middleware/auth'
 require_relative 'middleware/basic_auth'
+require_relative 'middleware/logster_env'
 
 I18n.config.enforce_available_locales=false
 class App < Sinatra::Base
@@ -79,6 +80,7 @@ class App < Sinatra::Base
 
     use BME::Auth
     use BME::BasicAuth
+    use BME::LogsterEnv
 
     use Logster::Middleware::Viewer
     use PryRescue::Rack if ENV["RACK_ENV"] == 'development'
