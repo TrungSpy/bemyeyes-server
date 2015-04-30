@@ -47,6 +47,7 @@ describe "Helper" do
     create_abuse_report blind, helper
     create_abuse_report blind, helper
 
+    helper.reload
     expect(helper.blocked).to eq(true)
   end
 
