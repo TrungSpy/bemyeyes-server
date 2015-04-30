@@ -19,11 +19,16 @@ gem 'event_bus'
 gem 'sinatra-jsonp'
 gem 'zero_push'
 gem 'sucker_punch', '~> 1.0'
+#Pry
+gem 'pry'
+gem 'pry-rescue'
+gem 'pry-doc'
+
 group :development, :test do
   gem 'rspec-mocks'
   gem 'factory_girl'
   gem 'rspec'
-  gem 'growl-rspec'
+  gem 'growl-rspec', github: "khebbie/growl-rspec"
   gem 'shoulda'
   gem 'rest-client'
   gem "rack-test", require: "rack/test"
@@ -32,11 +37,7 @@ group :development, :test do
   gem 'rspec-autotest'
   gem 'timecop'
 
-  #Pry
-  gem 'pry'
-  gem 'pry-rescue'
-  gem 'pry-doc'
-  gem 'awesome_print'
+ gem 'awesome_print'
   gem 'pry-stack_explorer'
   gem 'pry-byebug'
 end

@@ -14,6 +14,7 @@ class ThreeStrikesAndYouAreOut
     if user.nil?
       return
     end
+    user.reload
     no_of_abuses = user.abuse_reports.count
     if no_of_abuses == 1
       user.blocked = true
