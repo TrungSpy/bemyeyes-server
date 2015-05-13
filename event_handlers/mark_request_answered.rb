@@ -3,6 +3,7 @@ class MarkRequestAnswered
     request_id = payload[:request_id]
     helper = payload[:helper]
 
+    return if helper.nil?
     helper.reload
     request = Request.first(_id: request_id)
     request.helper = helper unless helper.nil?
