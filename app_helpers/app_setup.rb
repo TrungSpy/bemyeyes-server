@@ -39,6 +39,9 @@ class App < Sinatra::Base
         EventBus.subscribe(:abuse_report_filed, CreateAbuseReport.new, :abuse_report_filed)
         EventBus.subscribe(:abuse_report_filed, ThreeStrikesAndYouAreOut.new, :abuse_report_filed)
         EventBus.subscribe(EventLogger.new)
+        EventBus.on_error do |listener, payload|
+          TheLogger.log.fatal "error while executing event #{payload.inspect} in event_handler #{listener.inspect}"
+        end
       rescue Exception => e
         TheLogger.log.fatal "fatal event bus error #{e.message}"
       end
