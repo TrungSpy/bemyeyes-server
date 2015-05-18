@@ -3,7 +3,7 @@ BeMyEyes Server
 ###This is the server side of Be My Eyes  
 Whenever the iOs app makes a request it calls this API.  
 
-[![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
+[![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.svg)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
 [![Stories in Ready](https://badge.waffle.io/bemyeyes/bemyeyes-server.svg?label=ready&title=Ready)](http://waffle.io/bemyeyes/bemyeyes-server)
 
 Master [![Build Status Master](https://semaphoreci.com/api/v1/projects/705470cf-3977-4fe0-90f7-d328b955580f/186847/shields_badge.svg)](https://semaphoreci.com/khebbie-88/bemyeyes-server)
