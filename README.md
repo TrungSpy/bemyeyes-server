@@ -6,6 +6,10 @@ Whenever the iOs app makes a request it calls this API.
 [![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
 [![Stories in Ready](https://badge.waffle.io/bemyeyes/bemyeyes-server.svg?label=ready&title=Ready)](http://waffle.io/bemyeyes/bemyeyes-server)
 
+Master [![Build Status Master](https://semaphoreci.com/api/v1/projects/705470cf-3977-4fe0-90f7-d328b955580f/186847/shields_badge.svg)](https://semaphoreci.com/khebbie-88/bemyeyes-server)
+
+Dev [![Build Status Development](https://semaphoreci.com/api/v1/projects/705470cf-3977-4fe0-90f7-d328b955580f/192909/shields_badge.svg)](https://semaphoreci.com/khebbie-88/bemyeyes-server)
+
 ##Getting started  
 You can either use vagrant to run the site - this is the prefered way  
 Or you can run the server locally.  
