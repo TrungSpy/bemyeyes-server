@@ -66,8 +66,8 @@ class User
   end
 
   def reset_expiry_time
-    now = Time.now
-    self.expiry_time = Time.new(now.year, now.month, now.day, 0, 0, 0) - 1.days.to_i
+    now = Time.now.utc
+    self.expiry_time = now.midnight - 1.days.to_i
   end
 
   #should be called on each login
@@ -152,8 +152,8 @@ class User
 
 
   def calculate_expiry_time()
-    now = Time.now
-    self.expiry_time = Time.new(now.year, now.month, now.day, 0, 0, 0) + 30.days.to_i
+    now = Time.now.utc
+    self.expiry_time = now + 5.years.to_i
   end
 
   def user_saved
