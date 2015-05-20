@@ -3,8 +3,12 @@ BeMyEyes Server
 ###This is the server side of Be My Eyes  
 Whenever the iOs app makes a request it calls this API.  
 
-[![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server.png)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
+[![Code Climate](https://codeclimate.com/github/bemyeyes/bemyeyes-server/badges/gpa.svg)](https://codeclimate.com/github/bemyeyes/bemyeyes-server)
 [![Stories in Ready](https://badge.waffle.io/bemyeyes/bemyeyes-server.svg?label=ready&title=Ready)](http://waffle.io/bemyeyes/bemyeyes-server)
+
+Master [![Build Status](https://semaphoreci.com/api/v1/projects/66ae9467-141b-456a-a160-83bc75f423f6/426858/shields_badge.svg)](https://semaphoreci.com/bme/bemyeyes-server)
+
+Dev [![Build Status](https://semaphoreci.com/api/v1/projects/66ae9467-141b-456a-a160-83bc75f423f6/426839/shields_badge.svg)](https://semaphoreci.com/bme/bemyeyes-server)
 
 ##Getting started  
 You can either use vagrant to run the site - this is the prefered way  
