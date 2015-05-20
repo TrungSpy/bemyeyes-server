@@ -11,7 +11,7 @@ class App < Sinatra::Base
       begin
         should_be_authenticated
         device_token = body_params["device_token"]
-        if device_token.nil? || device_token.length == 0
+        if device_token.blank?
           TheLogger.log.info "device_token blank #{current_user.email}"
           return { "result" => "error", "message" => "device_token blank" }.to_json
         end
