@@ -21,14 +21,14 @@ Use the config.temp.yml as a template
 ##Use vagrant  
 Install VirtualBox  
 Install Vagrant  
-run 'vagrant up' in the root directory  
+run `vagrant up` in the root directory  
 
 The setup will take some time, since it sets up the entire server.  
 
 When the server is installed log in 'vagrant ssh'  
 
 Set up a user with the username and password configured in config.yml  
-start mongo: 'mongo bemyeyes'  
+start mongo: `mongo bemyeyes`  
 
 db.addUser( { user: "bemyeyes",  
               pwd: "myPassword",  
@@ -47,8 +47,8 @@ All interactions with the server demands HTTP Basic AUTH - the username password
 ##Run tests
   
 There is two parts to testing, in the root of the project:  
-1. 'rspec will simply run unit tests and tests against the db.  
-2. 'rspec rest-spec' will run tests against the rest api.  
+1. `rspec` will simply run unit tests and tests against the db.  
+2. `rspec rest-spec` will run tests against the rest api.  
 
 At the moment the tests are hardcoded to test against localhost:9001 which is the website exposed by the vagrant server.  
 
