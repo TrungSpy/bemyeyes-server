@@ -30,10 +30,12 @@ When the server is installed log in 'vagrant ssh'
 Set up a user with the username and password configured in config.yml  
 start mongo: `mongo bemyeyes`  
 
+```ruby
 db.addUser( { user: "bemyeyes",  
               pwd: "myPassword",  
               roles: [ "readWrite", "dbAdmin" ]
-            } )  
+            } )
+```
 
 Please note to provison the server we have created a script, which can also be used as a template for a server:  
 https://github.com/bemyeyes/railsready/blob/master/railsready.sh  
