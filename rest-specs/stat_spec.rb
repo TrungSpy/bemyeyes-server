@@ -39,6 +39,18 @@ describe 'community endpoint' do
   end
 end
 
+describe 'community languages endpoint' do
+  include_context "rest-context"
+  it 'shows stats' do
+    create_user 'blind'
+    get_community_stats_languages_url = "#{@servername_with_credentials}/stats/community/languages"
+    response = RestClient.get get_community_stats_languages_url, {accept: :json}
+    expect(response.code).to eq(200)
+
+    expect(response).to match_response_schema("stat_community_languages")
+  end
+end
+
 describe 'profile endpoint' do
   include_context "rest-context"
 
