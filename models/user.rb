@@ -62,7 +62,8 @@ class User
   end
 
   def is_logged_in?()
-    return Time.now < self.expiry_time
+    now = Time.now.utc
+    return now < self.expiry_time
   end
 
   def reset_expiry_time

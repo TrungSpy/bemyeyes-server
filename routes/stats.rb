@@ -14,6 +14,51 @@ class App < Sinatra::Base
       end
       return jsonp ({blind: result["blind"].to_i, helpers: result["helpers"].to_i, no_helped:result["no_helped"].to_i})
     end
+    
+    get '/community/languages' do 
+      key = "community_languages_stats"
+      redis_result = $redis.get(key)
+      if redis_result
+        return jsonp(JSON.parse(redis_result))
+      end
+      # Get stats for all languages
+      result = []
+      languages = User.distinct('languages')
+      languages.each do |language|
+        users = User.where(:languages => language)
+        total = users.count
+        next if total < 10 # Skip if low count
+        blind = users.where(:role => 'blind')
+        blind_total = blind.count
+        next if blind_total < 10 # Skip if low count
+        helpers = users.where(:role => 'helper')
+        helpers_total = helpers.count
+        next if helpers_total < 10 # Skip if low count
+        result << {
+          'language' => language,
+          'total' => {
+            'total' => total,
+            'logged_in' => users.where(:expiry_timy.gte => Time.now.utc).count,
+          },
+          'blind' => {
+            'total' => blind_total,
+            'logged_in' => blind.where(:expiry_timy.gte => Time.now.utc).count,
+          },
+          'helpers' => {
+            'total' => helpers_total,
+            'logged_in' => helpers.where(:expiry_time.gte => Time.now.utc).count,
+          } 
+        }
+      end
+      # Sort base on languages size
+      result = result.sort_by { |hsh| hsh["total"]["total"] }.reverse!
+
+      # Cache
+      $redis.set(key, result.to_json)
+      $redis.expire(key, 60*60) # An hour
+      
+      return jsonp(result)
+    end
 
     get '/profile/:auth_token' do
       begin
