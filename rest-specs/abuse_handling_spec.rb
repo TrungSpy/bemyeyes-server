@@ -31,11 +31,11 @@ describe "abuse handling" do
   it "will complain if no parameters are sent" do
     url = "#{@servername_with_credentials}/abuse/report"
     expect{ RestClient.post url, {}.to_json}
-    .to raise_error(RestClient::Unauthorized)
+      .to raise_error(RestClient::Unauthorized)
   end
 
   it "will not accept a abuse report if reporter is not logged in " do
-    id, auth_token = create_user 'blind'
+    _id, auth_token = create_user 'blind'
     log_user_in
     #we could add a helper and all to the request, but for this test we don't need it
     request = create_request_in_db auth_token
@@ -45,20 +45,50 @@ describe "abuse handling" do
     RestClient.put logoutUser_url, {'auth_token'=> auth_token}.to_json
 
     expect{report_abuse auth_token, request.id}
-    .to raise_error(RestClient::Unauthorized)
+      .to raise_error(RestClient::Unauthorized)
   end
 
   it "will let user report abuse" do
-    user_id = create_user 'blind'
+    create_user 'blind'
     auth_token = log_user_in
 
-   helper_user_id = create_user 'helper', "helper#{(Time.now.to_f*100000).to_s}@example.com"
-   helper = User.first(_id: helper_user_id)
+    helper_user_id = create_user 'helper', "helper#{(Time.now.to_f*100000).to_s}@example.com"
+    helper = User.first(_id: helper_user_id)
 
     request = create_request_in_db auth_token, helper
     report_abuse auth_token, request.id
     helper.reload
 
     expect(helper.abuse_reports.count).to eq(1)
+  end
+
+  it "will block a user after three abuse reports" do
+    create_user 'blind'
+    auth_token = log_user_in
+
+    helper_user_id = create_user 'helper', "helper#{(Time.now.to_f*100000).to_s}@example.com"
+    helper = User.first(_id: helper_user_id)
+
+    request = create_request_in_db auth_token, helper
+    report_abuse auth_token, request.id
+    report_abuse auth_token, request.id
+    report_abuse auth_token, request.id
+    helper.reload
+
+    expect(helper.blocked).to eq(true)
+  end
+
+  it "will not block a user after one abuse reports" do
+    create_user 'blind'
+    auth_token = log_user_in
+
+    helper_user_id = create_user 'helper', "helper#{(Time.now.to_f*100000).to_s}@example.com"
+    helper = User.first(_id: helper_user_id)
+
+    request = create_request_in_db auth_token, helper
+    report_abuse auth_token, request.id
+    helper.reload
+
+    expect(helper.blocked).to eq(false)
   end
 end
