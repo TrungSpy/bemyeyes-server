@@ -14,8 +14,8 @@ class App < Sinatra::Base
       end
       return jsonp ({blind: result["blind"].to_i, helpers: result["helpers"].to_i, no_helped:result["no_helped"].to_i})
     end
-    
-    get '/community/languages' do 
+
+    get '/community/languages' do
       key = "community_languages_stats"
       redis_result = $redis.get(key)
       if redis_result
@@ -47,7 +47,7 @@ class App < Sinatra::Base
           'helpers' => {
             'total' => helpers_total,
             'logged_in' => helpers.where(:expiry_time.gte => Time.now.utc).count,
-          } 
+          }
         }
       end
       # Sort base on languages size
@@ -56,7 +56,7 @@ class App < Sinatra::Base
       # Cache
       $redis.set(key, result.to_json)
       $redis.expire(key, 60*60) # An hour
-      
+
       return jsonp(result)
     end
 

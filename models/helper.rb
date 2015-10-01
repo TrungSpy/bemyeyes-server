@@ -31,6 +31,7 @@ class Helper < User
   def points
     self.helper_points.inject(0){|sum,x| sum + x.point }
   end
+
   def waiting_requests
     request_ids = HelperRequest
     .where(:helper_id => _id, :cancelled => false)
@@ -40,7 +41,6 @@ class Helper < User
     Request.all(:_id => {:$in =>request_ids}, :stopped => false, :answered  => false)
   end
 
-  #TODO to be improved with snooze functionality
   def available request=nil, limit=5
     begin
       raise 'no blind person in call' if request.blind.nil?

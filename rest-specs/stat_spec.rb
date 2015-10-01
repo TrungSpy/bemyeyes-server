@@ -24,7 +24,7 @@ describe  "post event" do
     expect(response.code).to eq(200)
 
     expect{ RestClient.post create_event_url, {'auth_token'=> auth_token, 'event'=> 'share_on_twitter'}.to_json}
-    .to raise_error(RestClient::BadRequest)
+      .to raise_error(RestClient::BadRequest)
   end
 end
 
@@ -58,12 +58,13 @@ describe 'profile endpoint' do
     get_profile_stats_url = "#{@servername_with_credentials}/stats/profile/no_token"
 
     expect{RestClient.get get_profile_stats_url, {accept: :json}}
-    .to raise_error(RestClient::BadRequest)
+      .to raise_error(RestClient::BadRequest)
   end
 
   it 'returns valid json' do
     token = create_user_return_token
     get_profile_stats_url = "#{@servername_with_credentials}/stats/profile/#{token}"
+
     response = RestClient.get get_profile_stats_url, {accept: :json}
 
     expect(response.code).to eq(200)
