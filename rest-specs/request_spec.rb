@@ -40,7 +40,7 @@ describe "Request" do
     token = log_user_in
     short_id = create_request token
 
-    helper_token, helper_id = create_helper_ready_for_call
+    helper_token, _helper_id = create_helper_ready_for_call
 
     answer_request short_id, helper_token
 

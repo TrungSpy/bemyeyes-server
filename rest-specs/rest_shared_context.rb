@@ -98,7 +98,6 @@ shared_context "rest-context" do
   def stop_request short_id, auth_token
     stop_request_url  = "#{@servername_with_credentials}/requests/#{short_id}/disconnect"
     response = RestClient.put stop_request_url, {'auth_token'=> auth_token}.to_json
-    puts response.inspect
     expect(response.code).to eq(200)
   end
 
