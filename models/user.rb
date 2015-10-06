@@ -25,6 +25,7 @@ class User
   key :last_name, String, :required => true
   #The iso 639-1 2 letter code
   key :languages, Array, :default => ["da","en"]
+  key :first_language, String
   key :user_id, String, :unique => true #, :required => true #Unique identifier from FB
   key :role, String, :required => true
   key :available_from, Time
@@ -44,6 +45,7 @@ class User
 
   before_save :encrypt_password
   before_create :set_unique_id
+  before_save :set_first_language
   before_save :convert_times_to_utc
   after_save :user_saved
 
@@ -175,6 +177,10 @@ class User
     end
 
     return nil
+  end
+
+  def set_first_language
+    self.first_language = self.languages[0] if self.languages
   end
 
   def encrypt_password

@@ -41,12 +41,36 @@ class Helper < User
     Request.all(:_id => {:$in =>request_ids}, :stopped => false, :answered  => false)
   end
 
-  def available request=nil, limit=5
+  def available(request=nil, limit=5)
+    raise 'no blind person in call' if request.blind.nil?
+
+    first_language_of_blind = request.blind.first_language
+
+    result = available_one_language(request, limit, first_language_of_blind)
+    return result if result.count > 0
+
+    result = available_many_languages(request, limit, request.blind.languages)
+    result
+  end
+
+  private
+
+  def available_many_languages(request, limit, languages)
+    result = internal_available(request)
+    result.where(:languages => {:$in => languages})
+      .all.sample(limit)
+  end
+
+  def available_one_language(request, limit, language)
+    result = internal_available(request)
+    result.where(:first_language => language)
+      .all.sample(limit)
+  end
+
+  def internal_available(request)
     begin
-      raise 'no blind person in call' if request.blind.nil?
-      languages_of_blind = request.blind.languages ||["en"]
       now = Time.now.utc
-      now_in_seconds_since_midnight = Helper.time_to_seconds_since_midnight now, 0
+      now_in_seconds_since_midnight = Helper.time_to_seconds_since_midnight(now, 0)
 
       request_id = request.present? ? request.id : nil
       contacted_helpers = HelperRequest
@@ -76,11 +100,9 @@ class Helper < User
         .where('abuse_reports.blind_id' => {"$ne" =>  request.blind_id})
         .where(:expiry_time.gt => Time.now)
         .where(:blocked => false)
-        .where(:languages => {:$in => languages_of_blind})
         .where(:user_id.nin => helpers_in_a_call)
         .where(:inactive => false)
         .sort(:last_help_request.asc)
-        .all.sample(limit)
     rescue Exception => e
       TheLogger.log.fatal "Fatal trying to find available helpers #{e.message}"
       []
