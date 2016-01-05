@@ -20,7 +20,7 @@ class ArchiveRecording < EventHandlerBase
       TheLogger.log.info "Starting session recording #{request.session_id}"
       archives = opentok.archives.all
 
-      archives.all.keep_if { |archive| archive.session_id == request.session_id}
+      archives.keep_if { |archive| archive.session_id == request.session_id}
       TheLogger.log.info "session already being recorded #{request.session_id}" if archive.count > 0
 
       archive = opentok.archives.create(request.session_id, :name => "helper: " + helper.first_name)
