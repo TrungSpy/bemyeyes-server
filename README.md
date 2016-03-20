@@ -17,6 +17,8 @@ Or you can run the server locally.
 ##Configuration
 Copy config.yml to the config folder    
 Use the config.temp.yml as a template  
+When everything is setup and you are ready to run the site for the first time, you should run the rake taske "create_user_levels".
+`rake create_user_levels`
 
 ##Use vagrant  
 Install VirtualBox  
